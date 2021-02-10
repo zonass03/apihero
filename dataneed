@@ -1,0 +1,42 @@
+lazada
+app key = 125715
+app secret = PgHH3iKxhpf8AljMWgqsNnR3Jr0xSHe5
+accessstoken = 50000500625qH2rLfTCpmoXOvCabfxDjwiROH10c23fdf6edyAPrYjnDxWGvAVb
+
+https://sellertest.herokuapp.com/?code=0_125715_igW9zWJWpgjXAdHHJULUzch28285
+
+getorders  
+php
+$c = new LazopClient(url,appkey,appSecret);
+$request = new LazopRequest('/orders/get','GET');
+$request->addApiParam('update_before','2018-02-10T16:00:00+08:00');
+$request->addApiParam('sort_direction','DESC');
+$request->addApiParam('offset','0');
+$request->addApiParam('limit','10');
+$request->addApiParam('update_after','2017-02-10T09:00:00+08:00');
+$request->addApiParam('sort_by','updated_at');
+$request->addApiParam('created_before','2018-02-10T16:00:00+08:00');
+$request->addApiParam('created_after','2017-02-10T09:00:00+08:00');
+$request->addApiParam('status','shipped');
+var_dump($c->execute($request, $accessToken));
+
+curl
+curl -X GET https://api.lazada.com.ph/rest + '/orders/get?timestamp=1612861607806&app_key=12345678&sign_method=sha256&sign=D13F2A03BE94D9AAE9F933FFA7B13E0A5AD84A3DAEBC62A458A3C382EC2E91EC&access_token=37c66819338b4562e17675b8c5c4dbd0&update_before=2018-02-10T16%3A00%3A00%2B08%3A00&sort_direction=DESC&offset=0&limit=10&update_after=2017-02-10T09%3A00%3A00%2B08%3A00&sort_by=updated_at&created_before=2018-02-10T16%3A00%3A00%2B08%3A00&created_after=2017-02-10T09%3A00%3A00%2B08%3A00&status=shipped'
+
+
+generate access token for php
+
+$c = new LazopClient(url,appkey,appSecret);
+$request = new LazopRequest('/auth/token/create');
+$request->addApiParam('code','0_2DL4DV3jcU1UOT7WGI1A4rY91');
+$request->addApiParam('uuid','38284839234');
+var_dump($c->execute($request));
+
+curl -X POST 'https://api.lazada.com.ph/rest/auth/token/create' \
+-H 'Content-Type:application/x-www-form-urlencoded;charset=utf-8' \
+-d 'app_key=12345678' \
+-d 'timestamp=1612861027740' \
+-d 'sign_method=sha256' \
+-d 'sign=D13F2A03BE94D9AAE9F933FFA7B13E0A5AD84A3DAEBC62A458A3C382EC2E91EC' \
+-d 'code=0_2DL4DV3jcU1UOT7WGI1A4rY91' \
+-d 'uuid=38284839234' \
