@@ -70,13 +70,18 @@ class HomeController extends Controller
             return $lazada->execute($request, $this->access_token);
 
                 
-    }
+    } 
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
+    public function zaloras()
+    {
+        //
+    }
+
     public function create()
     {
         //
