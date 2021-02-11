@@ -18,5 +18,6 @@ use App\Http\Controllers\HomeController;
 //     return view('welcome');
 // });
 Route::get('/', [HomeController::class,'index']);
+Route::get('/zalora', [HomeController::class,'index']);
 
 
