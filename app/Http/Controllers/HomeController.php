@@ -73,14 +73,14 @@ class HomeController extends Controller
       $request = new Request('GET', 'https://auth.lazada.com/oauth/authorize?response_type=code&force_auth=true&redirect_uri=https://sellertest.herokuapp.com/'."&client_id=125715");
                 echo $request->getUri()->getPath(); 
 
-                try {
-                    $lazada = new LazopClient($this->auth_url, $this->partner_id, $this->partner_key);
-                    $request = new LazopRequest('/auth/token/create');
-                   $request->addApiParam('code', '0_125715_3Q64fkpBvwMGbT8NPy2TWdYd8572');
-                    return $lazada->execute($request);
-                } catch(\Exception $e) {
-                    return false;
-                }
+//                 try {
+//                     $lazada = new LazopClient($this->auth_url, $this->partner_id, $this->partner_key);
+//                     $request = new LazopRequest('/auth/token/create');
+//                    $request->addApiParam('code', '0_125715_3Q64fkpBvwMGbT8NPy2TWdYd8572');
+//                     return $lazada->execute($request);
+//                 } catch(\Exception $e) {
+//                     return false;
+//                 }
 
        // return $response;
     }
