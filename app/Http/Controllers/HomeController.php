@@ -10,6 +10,9 @@ use  App\Http\Lazadas\lazada;
 use  App\Http\Lazadas\LazopRequest;
 use  App\Http\Lazadas\LazopClient;
 use Carbon\Carbon;
+use DateTime;
+use DatePeriod;
+use DateIntercal;
 class HomeController extends Controller
 {
     /**
@@ -79,7 +82,51 @@ class HomeController extends Controller
      */
     public function zaloras()
     {
-        //
+        
+// Pay no attention to this statement.
+// It's only needed if timezone in php.ini is not set correctly.
+date_default_timezone_set("UTC");
+
+// The current time. Needed to create the Timestamp parameter below.
+$now = new DateTime();
+
+// The parameters for our GET request. These will get signed.
+$parameters = array(
+    // The user ID for which we are making the call.
+    'UserID' => 'umcc.mdb.online@gmail.com',
+
+    // The API version. Currently must be 1.0
+    'Version' => '1.0',
+
+    // The API method to call.
+    'Action' => 'FeedList',
+
+    // The format of the result.
+    'Format' => 'XML',
+
+    // The current time formatted as ISO8601
+    'Timestamp' => $now->format(DateTime::ISO8601)
+);
+
+// Sort parameters by name.
+ksort($parameters);
+
+// URL encode the parameters.
+$encoded = array();
+foreach ($parameters as $name => $value) {
+    $encoded[] = rawurlencode($name) . '=' . rawurlencode($value);
+}
+
+// Concatenate the sorted and URL encoded parameters into a string.
+$concatenated = implode('&', $encoded);
+
+// The API key for the user as generated in the Seller Center GUI.
+// Must be an API key associated with the UserID parameter.
+$api_key = '24c1ae2b4f5c5cce2b3ee3a2426918993c90b04d';
+
+// Compute signature and add it to the parameters.
+$parameters['Signature'] =rawurlencode(hash_hmac('sha256', $concatenated, $api_key, false));
+return $parameters['Signature'];
     }
 
     public function create()
