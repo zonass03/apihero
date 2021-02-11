@@ -1,10 +1,10 @@
 <?php
-namespace App\Models;
+namespace App\Http\Lazadas;
 
 use Exception;
 
 
-class LazopClient
+class LazopClient 
 {
 	public $appkey;
 
