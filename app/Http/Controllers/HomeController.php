@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\home;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use App\Models\LazopClient;
-use App\Models\LazopRequest;
 
+use  App\Http\Lazadas\lazada;
+use  App\Http\Lazadas\LazopRequest;
+use  App\Http\Lazadas\LazopClient;
 class HomeController extends Controller
 {
     /**
@@ -15,74 +16,59 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    
-
     public $lazada;
     public $partner_id;
     public $partner_key;
-    public $access_token;
+    public $access_token='50000500830dXmfr8KFvYnRBebhWclQbyxC6GAs6ty1f49fcffYcKkRGZTBATFO';
     public $auth_url = 'https://auth.lazada.com/rest';
-    public $api_url = 'https://api.lazada.vn/rest';
-    public function __construct($access_token = '') {
+    public $api_url = 'https://api.lazada.com.ph/rest';
+
+    public function __construct($access_token = '50000500830dXmfr8KFvYnRBebhWclQbyxC6GAs6ty1f49fcffYcKkRGZTBATFO') {
         $this->partner_id = '125715';
         $this->partner_key = 'PgHH3iKxhpf8AljMWgqsNnR3Jr0xSHe5';
         $this->access_token = $access_token;
         $this->lazada = new LazopClient($this->api_url, $this->partner_id, $this->partner_key);
-       
-    }
-
-    public function request($path, $params = [], $method = 'GET') {
-        $request = new LazopRequest($path, $method);
-        if(!empty($params)) {
-            foreach($params as $key => $value) {
-                $request->addApiParam($key, $value);
-            }
-        }
-        return $this->lazada->execute($request, $this->access_token);
-    }
-
-    public function authorization($return_url) {
-        try {
-            $auth_url = 'https://auth.lazada.com/oauth/authorize?response_type=code&force_auth=true&redirect_uri='.$return_url."&client_id=".$this->partner_id;
-           dd( $auth_url);
-            return $auth_url;
-        } catch(\Exception $e) {
-            return false;
-        }
-    }
-    
-    public function get_access_token($code) {
-        try {
-            $lazada = new LazopClient($this->auth_url, $this->partner_id, $this->partner_key);
-            $request = new LazopRequest('/auth/token/create');
-            $request->addApiParam('code', $code);
-            return $lazada->execute($request);
-        } catch(\Exception $e) {
-            return false;
-        }
     }
 
     public function index()
     {
+        
         //
 //         app key = 125715
 // app secret = PgHH3iKxhpf8AljMWgqsNnR3Jr0xSHe5
 // accessstoken = 50000500625qH2rLfTCpmoXOvCabfxDjwiROH10c23fdf6edyAPrYjnDxWGvAVb
 
-       // $response = Http::get('https://api.lazada.com.ph/rest/orders/get?sort_direction=DESC&offset=0&created_after=2021-02-10T00%3A00%3A00%2B08%3A00&sort_by=updated_at&app_key=125715&sign_method=sha256&timestamp=1612940288606&access_token=50000500119cd0xTpCgxxeSinmpYmtA11d68a91a5oTCMPcuxjBbFwBKVjxxxw8&sign=F7737C14FBAD201F975E26AF74D7FD9E7D8365E1CBAF8B34C48A3522C8FF4804');
- echo url()->full();
-//                 try {
-//                     $lazada = new LazopClient($this->auth_url, $this->partner_id, $this->partner_key);
-//                     $request = new LazopRequest('/auth/token/create');
-//                    $request->addApiParam('code', '0_125715_3Q64fkpBvwMGbT8NPy2TWdYd8572');
-//                     return $lazada->execute($request);
-//                 } catch(\Exception $e) {
-//                     return false;
-//                 }
+ //// this is for lazada get autorazation //
+            // try {
+            //     $response = Http::get('https://auth.lazada.com/oauth/authorize?response_type=code&force_auth=true&uri=http://127.0.0.1:8000/'."&client_id=125715");
+            //     return $response;
+            // } catch(\Exception $e) {
+            //     return false;
+            // }
+           
 
-       // return $response;
+ //// get access token//
+
+                //     $lazada = new LazopClient($this->auth_url, $this->partner_id, $this->partner_key);
+                //     $request = new LazopRequest('/auth/token/create');
+                //    $request->addApiParam('code', '0_125715_kwtK3DsmrVCroSrAR99rMF3m8484');
+                //     return $lazada->execute($request);
+
+                    // $lazada = new LazopClient($this->auth_url, $this->partner_id, $this->partner_key);
+                    // $request = new LazopRequest("/auth/token/refresh");
+                    // $request->addApiParam("refresh_token", "50000601c30atpedfgu3LVvik87Ixlsvle3mSoB7701ceb156fPunYZ43GBg");
+                    // echo  $lazada->execute($request);
+               
+
+
+             $lazada = new LazopClient($this->api_url, $this->partner_id, $this->partner_key);
+            $request = new LazopRequest('/orders/get','GET');
+            $request->addApiParam('created_after','2020-02-10T00:00:00+08:00');
+            $request->addApiParam('status','pending');
+            return $lazada->execute($request, $this->access_token);
+
+                
     }
-    
 
     /**
      * Show the form for creating a new resource.
