@@ -1,7 +1,7 @@
 <?php
-namespace App\Models;
+namespace App\Http\Lazadas;
 
-class LazopRequest
+class LazopRequest 
 {
 	public $apiName;
 
@@ -78,4 +78,3 @@ class LazopRequest
 	}
 }
 
-?>
