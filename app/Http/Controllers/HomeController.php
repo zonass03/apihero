@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Http;
 use  App\Http\Lazadas\lazada;
 use  App\Http\Lazadas\LazopRequest;
 use  App\Http\Lazadas\LazopClient;
+use Carbon\Carbon;
 class HomeController extends Controller
 {
     /**
@@ -56,14 +57,15 @@ class HomeController extends Controller
 
                     // $lazada = new LazopClient($this->auth_url, $this->partner_id, $this->partner_key);
                     // $request = new LazopRequest("/auth/token/refresh");
-                    // $request->addApiParam("refresh_token", "50000601c30atpedfgu3LVvik87Ixlsvle3mSoB7701ceb156fPunYZ43GBg");
+                    // $request->addApiParam("refresh_token", "50001501e30rKydbrgqzWdHFPJxGqwke3HOOFtryys1003aa6cRvaBwBuQ0B2tM");
                     // echo  $lazada->execute($request);
                
-
-
+                    $carbon = new Carbon();  
+                    $dt = Carbon::today()->toDateString(); 
+               
              $lazada = new LazopClient($this->api_url, $this->partner_id, $this->partner_key);
             $request = new LazopRequest('/orders/get','GET');
-            $request->addApiParam('created_after','2020-02-10T00:00:00+08:00');
+            $request->addApiParam('created_after',$dt.'T00:00:00+08:00');
             $request->addApiParam('status','pending');
             return $lazada->execute($request, $this->access_token);
 
