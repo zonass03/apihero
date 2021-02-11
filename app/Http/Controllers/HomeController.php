@@ -70,9 +70,18 @@ class HomeController extends Controller
 // accessstoken = 50000500625qH2rLfTCpmoXOvCabfxDjwiROH10c23fdf6edyAPrYjnDxWGvAVb
 
        // $response = Http::get('https://api.lazada.com.ph/rest/orders/get?sort_direction=DESC&offset=0&created_after=2021-02-10T00%3A00%3A00%2B08%3A00&sort_by=updated_at&app_key=125715&sign_method=sha256&timestamp=1612940288606&access_token=50000500119cd0xTpCgxxeSinmpYmtA11d68a91a5oTCMPcuxjBbFwBKVjxxxw8&sign=F7737C14FBAD201F975E26AF74D7FD9E7D8365E1CBAF8B34C48A3522C8FF4804');
-
-          $request = new Request('GET', 'https://auth.lazada.com/oauth/authorize?response_type=code&force_auth=true&redirect_uri=https://sellertest.herokuapp.com/'."&client_id=125715");
+      $request = new Request('GET', 'https://auth.lazada.com/oauth/authorize?response_type=code&force_auth=true&redirect_uri=https://sellertest.herokuapp.com/'."&client_id=125715");
                 echo $request->getUri()->getPath(); 
+
+                try {
+                    $lazada = new LazopClient($this->auth_url, $this->partner_id, $this->partner_key);
+                    $request = new LazopRequest('/auth/token/create');
+                   $request->addApiParam('code', '0_125715_3Q64fkpBvwMGbT8NPy2TWdYd8572');
+                    return $lazada->execute($request);
+                } catch(\Exception $e) {
+                    return false;
+                }
+
        // return $response;
     }
     
