@@ -156,7 +156,7 @@ $data = curl_exec($ch);
 
 
 curl_close($ch);
-$response = Http::get('https://sellercenter-api.zalora.com.ph', $queryString);
+// $response = Http::get('https://sellercenter-api.zalora.com.ph', $queryString);
 
 return $data;
 
