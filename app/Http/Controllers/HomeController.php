@@ -63,14 +63,17 @@ class HomeController extends Controller
                     // $request->addApiParam("refresh_token", "50001501e30rKydbrgqzWdHFPJxGqwke3HOOFtryys1003aa6cRvaBwBuQ0B2tM");
                     // echo  $lazada->execute($request);
 
-                    $carbon = new Carbon();
-                    $dt = Carbon::today()->toDateString();
+            //         $carbon = new Carbon();
+            //         $dt = Carbon::today()->toDateString();
 
              $lazada = new LazopClient($this->api_url, $this->partner_id, $this->partner_key);
             $request = new LazopRequest('/orders/get','GET');
             $request->addApiParam('created_after',$dt.'T00:00:00+08:00');
             $request->addApiParam('status','pending');
              return $lazada->execute($request, $this->access_token);
+
+
+
 
     }
 
@@ -85,7 +88,7 @@ class HomeController extends Controller
 // Pay no attention to this statement.
 // It's only needed if timezone in php.ini is not set correctly.
 date_default_timezone_set("UTC");
-
+$yesterday = Carbon::yesterday();
 // The current time. Needed to create the Timestamp parameter below.
 $now = new DateTime();
 
@@ -100,9 +103,11 @@ $parameters = array(
 
     // The API method to call.
     'Action' => 'GetOrders',
+    'Filter' => 'pending',
 
     //
-    'CreatedAt'=>$now->format(DateTime::ISO8601),
+    'CreatedAfter'=>$yesterday->format(DateTime::ISO8601),
+    'CreatedBefore'=>$now->format(DateTime::ISO8601),
 
     // The format of the result.
     'Format' => 'JSON',
