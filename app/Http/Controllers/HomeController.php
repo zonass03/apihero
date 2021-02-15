@@ -36,7 +36,7 @@ class HomeController extends Controller
 
     public function index()
     {
-        
+
         //
 //         app key = 125715
 // app secret = PgHH3iKxhpf8AljMWgqsNnR3Jr0xSHe5
@@ -49,7 +49,7 @@ class HomeController extends Controller
             // } catch(\Exception $e) {
             //     return false;
             // }
-           
+
 
  //// get access token//
 
@@ -62,18 +62,17 @@ class HomeController extends Controller
                     // $request = new LazopRequest("/auth/token/refresh");
                     // $request->addApiParam("refresh_token", "50001501e30rKydbrgqzWdHFPJxGqwke3HOOFtryys1003aa6cRvaBwBuQ0B2tM");
                     // echo  $lazada->execute($request);
-               
-                    $carbon = new Carbon();  
-                    $dt = Carbon::today()->toDateString(); 
-               
+
+                    $carbon = new Carbon();
+                    $dt = Carbon::today()->toDateString();
+
              $lazada = new LazopClient($this->api_url, $this->partner_id, $this->partner_key);
             $request = new LazopRequest('/orders/get','GET');
             $request->addApiParam('created_after',$dt.'T00:00:00+08:00');
             $request->addApiParam('status','pending');
-            return $lazada->execute($request, $this->access_token);
+             return $lazada->execute($request, $this->access_token);
 
-                
-    } 
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -82,13 +81,14 @@ class HomeController extends Controller
      */
     public function zaloras()
     {
-        
+
 // Pay no attention to this statement.
 // It's only needed if timezone in php.ini is not set correctly.
 date_default_timezone_set("UTC");
 
 // The current time. Needed to create the Timestamp parameter below.
 $now = new DateTime();
+
 
 // The parameters for our GET request. These will get signed.
 $parameters = array(
@@ -99,10 +99,13 @@ $parameters = array(
     'Version' => '1.0',
 
     // The API method to call.
-    'Action' => 'FeedList',
+    'Action' => 'GetOrders',
+
+    //
+    'CreatedAt'=>$now->format(DateTime::ISO8601),
 
     // The format of the result.
-    'Format' => 'XML',
+    'Format' => 'JSON',
 
     // The current time formatted as ISO8601
     'Timestamp' => $now->format(DateTime::ISO8601)
@@ -126,12 +129,39 @@ $api_key = '24c1ae2b4f5c5cce2b3ee3a2426918993c90b04d';
 
 // Compute signature and add it to the parameters.
 $parameters['Signature'] =rawurlencode(hash_hmac('sha256', $concatenated, $api_key, false));
-return $parameters['Signature'];
+ $parameters['Signature'];
+
+
+// ...continued from above
+
+// Replace with the URL of your API host.
+$url = "https://sellertest.herokuapp.com/zalora";
+
+// Build Query String
+$queryString = http_build_query($parameters, '', '&', PHP_QUERY_RFC3986);
+
+// Open cURL connection
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $url."?".$queryString);
+
+// Save response to the variable $data
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+$data = curl_exec($ch);
+
+
+curl_close($ch);
+$response = Http::get('https://sellercenter-api.zalora.com.ph', $queryString);
+
+return $response;
+
+
     }
 
     public function create()
     {
         //
+
     }
 
     /**
