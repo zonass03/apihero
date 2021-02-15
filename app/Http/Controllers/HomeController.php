@@ -63,8 +63,8 @@ class HomeController extends Controller
                     // $request->addApiParam("refresh_token", "50001501e30rKydbrgqzWdHFPJxGqwke3HOOFtryys1003aa6cRvaBwBuQ0B2tM");
                     // echo  $lazada->execute($request);
 
-            //         $carbon = new Carbon();
-            //         $dt = Carbon::today()->toDateString();
+                    $carbon = new Carbon();
+                    $dt = Carbon::today()->toDateString();
 
              $lazada = new LazopClient($this->api_url, $this->partner_id, $this->partner_key);
             $request = new LazopRequest('/orders/get','GET');
