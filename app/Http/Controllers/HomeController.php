@@ -140,7 +140,7 @@ $parameters['Signature'] =rawurlencode(hash_hmac('sha256', $concatenated, $api_k
 // ...continued from above
 
 // Replace with the URL of your API host.
-$url = "https://sellertest.herokuapp.com/zalora";
+$url = "https://sellercenter-api.zalora.com.ph";
 
 // Build Query String
 $queryString = http_build_query($parameters, '', '&', PHP_QUERY_RFC3986);
@@ -158,7 +158,7 @@ $data = curl_exec($ch);
 curl_close($ch);
 $response = Http::get('https://sellercenter-api.zalora.com.ph', $queryString);
 
-return $response;
+return $data;
 
 
     }
