@@ -1,4 +1,32 @@
 lazada
+
+      //
+//         app key = 125715
+// app secret = PgHH3iKxhpf8AljMWgqsNnR3Jr0xSHe5
+// accessstoken = 50000500625qH2rLfTCpmoXOvCabfxDjwiROH10c23fdf6edyAPrYjnDxWGvAVb
+
+ //// this is for lazada get autorazation //
+            // try {
+            //     $response = Http::get('https://auth.lazada.com/oauth/authorize?response_type=code&force_auth=true&uri=http://127.0.0.1:8000/'."&client_id=125715");
+            //     return $response;
+            // } catch(\Exception $e) {
+            //     return false;
+            // }
+
+
+ //// get access token//
+
+                //     $lazada = new LazopClient($this->auth_url, $this->partner_id, $this->partner_key);
+                //     $request = new LazopRequest('/auth/token/create');
+                //    $request->addApiParam('code', '0_125715_kwtK3DsmrVCroSrAR99rMF3m8484');
+                //     return $lazada->execute($request);
+// refresh token
+                    // $lazada = new LazopClient($this->auth_url, $this->partner_id, $this->partner_key);
+                    // $request = new LazopRequest("/auth/token/refresh");
+                    // $request->addApiParam("refresh_token", "50001501e30rKydbrgqzWdHFPJxGqwke3HOOFtryys1003aa6cRvaBwBuQ0B2tM");
+                    // echo  $lazada->execute($request);
+
+
 app key = 125715
 app secret = PgHH3iKxhpf8AljMWgqsNnR3Jr0xSHe5
 accessstoken = 50000500625qH2rLfTCpmoXOvCabfxDjwiROH10c23fdf6edyAPrYjnDxWGvAVb
