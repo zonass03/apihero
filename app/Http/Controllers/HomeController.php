@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\home;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Response;
 
 use App\Http\Lazadas\lazada;
 use App\Http\Lazadas\LazopRequest;
@@ -50,23 +51,16 @@ class HomeController extends Controller
         $request->addApiParam('created_after', $dt . 'T00:00:00+08:00');
         $request->addApiParam('status', 'pending');
         $jsongetLazadaNewOrder = $lazada->execute($request, $this->access_token);
-         $lazadajson = json_decode($jsongetLazadaNewOrder);
+          $lazadajson = json_decode($jsongetLazadaNewOrder, true);
    
 
-        $test = json_decode(json_encode($lazadajson),true);
-        $tests = $test['data'];
- 
-        // foreach($test['data']['orders'] as $key) { //foreach element in $arr
-        //     if ($key > 1) { 
-        //         $tests = $key['order_number'];
-        //         return $tests;
-        //     }
-        // }
+      
+         foreach($lazadajson['data']['orders'] as $i => $v)
+         {
+           $red[] = $v['order_number'];
+         }
+         $var = response()->json($red);
 
-               // $area = json_decode($lazadajson,TRUE);
-            //    $tests = $test['data']['orders'][0]['order_number'];
-return $tests;
-     
    
     }
     public function lazgetorderitems()
@@ -77,7 +71,14 @@ return $tests;
         $dt = Carbon::today()->toDateString();
         $lazada = new LazopClient($this->api_url, $this->partner_id, $this->partner_key);
         $request = new LazopRequest('/orders/items/get/new','GET');
-        $request->addApiParam('order_ids','[356666557646611, 355354439218085]');
+        $request->addApiParam('order_ids','[ 356769709495301,
+        356757543044743,
+        355414479054782,
+        356761149464325,
+        355432296712157,
+        355442636451112,
+       
+      ]');
         return $lazada->execute($request, $this->access_token);
     }
 
