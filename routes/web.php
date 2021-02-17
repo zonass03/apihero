@@ -19,6 +19,11 @@ use App\Http\Controllers\HomeController;
 // });
 Route::get('/', [HomeController::class,'index']);
 Route::get('/lazada', [HomeController::class,'lazadas']);
+Route::get('/lazada/refreshtoken', [HomeController::class,'lazadasrefreshToken']);
+Route::get('/lazada/token', [HomeController::class,'lazadagetToken']);
+Route::get('/lazada/code', [HomeController::class,'lazadaauthorization']);
+Route::get('/lazada/getItems', [HomeController::class,'lazgetorderitems']);
+
 Route::get('/zalora', [HomeController::class,'zaloras']);
 
 
