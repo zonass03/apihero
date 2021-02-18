@@ -5,6 +5,10 @@ use App\Models\home;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use GuzzleHttp\Client;
+
 
 use App\Http\Lazadas\lazada;
 use App\Http\Lazadas\LazopRequest;
@@ -51,35 +55,187 @@ class HomeController extends Controller
         $request->addApiParam('created_after', $dt . 'T00:00:00+08:00');
         $request->addApiParam('status', 'pending');
         $jsongetLazadaNewOrder = $lazada->execute($request, $this->access_token);
-          $lazadajson = json_decode($jsongetLazadaNewOrder, true);
-   
 
-      
+          $lazadajson = json_decode($jsongetLazadaNewOrder, true);
+          $laz = $lazadajson['data']['orders'];
+
+   
          foreach($lazadajson['data']['orders'] as $i => $v)
          {
-           $red[] = $v['order_number'];
+           $lazadaOrderNumber[] = $v['order_number'];
+               $datas = ['order_number' => $lazadaOrderNumber];
          }
-         $var = response()->json($red);
 
+         foreach($lazadajson['data']['orders'] as $i => $v)
+         {
+           $lazadaOrderName[] = $v['address_billing']['first_name'];
+           $data = (['first_name' => $lazadaOrderName, 'order_number' => $lazadaOrderNumber]);
+         }
+         //$varss = response()->json($data)->getContent();
+     
+        //  $var = response()->json($datas)->getContent();
+        //  $lazadawithItems = $lazada->execute($request, $this->access_token);
+         //  $collection = collect([$varss, $var,$lazadawithItems]);
+        //  return response()->json($collection);
+       
+        $lazOrderNum = response()->json($lazadaOrderNumber)->getContent();
+        $request = new LazopRequest('/orders/items/get','GET');
+        $request->addApiParam('order_ids',$lazOrderNum);
+         $lazadawithItems = $lazada->execute($request, $this->access_token);
+          return $lazada->execute($request, $this->access_token);
+       
+//          $collection = collect( $jsongetLazadaNewOrder );
+
+// $merged = $collection->merge([ $data]);
+
+// return $merged->all();
+ 
    
     }
     public function lazgetorderitems()
     {
-
-
-        $carbon = new Carbon();
-        $dt = Carbon::today()->toDateString();
         $lazada = new LazopClient($this->api_url, $this->partner_id, $this->partner_key);
-        $request = new LazopRequest('/orders/items/get/new','GET');
-        $request->addApiParam('order_ids','[ 356769709495301,
-        356757543044743,
-        355414479054782,
-        356761149464325,
-        355432296712157,
-        355442636451112,
+        $request = new LazopRequest('/order/get/new','GET');
+        $request->addApiParam('order_id','355584238548124');
+        $getOrderLaz = $lazada->execute($request, $this->access_token);
+        $jsondecodegetOrderLaz = json_decode($getOrderLaz, true);
+        $lazOrder = $jsondecodegetOrderLaz['data']['order_number'];
+        $lazOrderNowOrderNumbers = response()->json($lazOrder)->getContent();
+
+        $lazada = new LazopClient($this->api_url, $this->partner_id, $this->partner_key);
+        $request = new LazopRequest('/order/items/get/new','GET');
+        $request->addApiParam('order_id','355584238548124');
+         $dataGetOrder =$lazada->execute($request, $this->access_token);
+
+        $orderItemDecode = json_decode($dataGetOrder, true);
+
+        $collection = collect( ['data1'=>$jsondecodegetOrderLaz] );
+        $merged = $collection->merge([ 'data2'=>$orderItemDecode]);
+        $mixeOrderOrderitem = $merged->all();
+
+      
+        $order_reference = $mixeOrderOrderitem['data1']['data']['order_number'];
+        $customer_name = $mixeOrderOrderitem['data1']['data']['customer_first_name'];
+        $customer_mobileno = $mixeOrderOrderitem['data1']['data']['address_billing']['phone'];
+        $shipping_address = $mixeOrderOrderitem['data1']['data']['address_shipping']['address5'];
+        $shipping_city = $mixeOrderOrderitem['data1']['data']['address_shipping']['address1'];
+        $shipping_region = $mixeOrderOrderitem['data1']['data']['address_shipping']['address3'];
+        $shipping_country = $mixeOrderOrderitem['data1']['data']['address_shipping']['country'];
+        $total_cost = $mixeOrderOrderitem['data1']['data']['price'];
+        $total_shipping = $mixeOrderOrderitem['data1']['data']['shipping_fee'];
+        $notes = $mixeOrderOrderitem['data1']['data']['remarks'];
+        $payment_method = $mixeOrderOrderitem['data1']['data']['payment_method'];
+        $qty_to_invoice = $mixeOrderOrderitem['data1']['data']['items_count'];
+        $ordered_date = $mixeOrderOrderitem['data1']['data']['created_at'];
+        
+        
+
+        $customer_id = $mixeOrderOrderitem['data2']['data'][0]['order_id'];
+        $merchant_name = $mixeOrderOrderitem['data2']['data'][0]['shop_id'];
+        $total_net = $mixeOrderOrderitem['data2']['data'][0]['paid_price'];
+        $total_vat = $mixeOrderOrderitem['data2']['data'][0]['tax_amount'];
+        $product_id = $mixeOrderOrderitem['data2']['data'][0]['order_item_id'];
+        $sku = $mixeOrderOrderitem['data2']['data'][0]['sku'];
+        $product_name = $mixeOrderOrderitem['data2']['data'][0]['name'];
+        $product_image_url = $mixeOrderOrderitem['data2']['data'][0]['product_main_image'];
+        
+        
+      
+   
+     
+       // dd($sku );
+     
+ 
+
+        $testjson =[
+            "order_reference" => $order_reference  ,
+             "merchant_id" => "11111111",
+             "merchant_name" => $merchant_name,
+             "agent_id" => null,
+             "agent_name" => null,
+             "customer_id" =>  $customer_id,
+             "customer_name" => $customer_name,
+             "customer_mobileno" => $customer_mobileno,
+             "is_manually_shipped" => false,
+             "pickup_location_id" => "1770",
+             "pickup_location_name" => "JP RIZAL 3",
+             "pickup_group_name" => "ROUTE63",
+             "shipping_address" => $shipping_address,
+             "shipping_city" => $shipping_city,
+             "shipping_region" => $shipping_region,
+             "shipping_country" => $shipping_country,
+             "total_cost" => $total_cost,
+             "total_commission" => 0,
+             "total_gross" => $total_cost,
+             "total_discount" => 0,
+             "total_shipping" => $total_shipping,
+             "total_net" => $total_net,
+             "total_vatable" => 0,
+             "total_non_vatable" => 0,
+             "total_vat" =>$total_vat,
+             "currency" => "PHP",
+             "ordered_date" =>  '2021-02-07T04:22:19.000Z',
+             "notes" => $notes,
+             "payment_method" =>  $payment_method,
+             "items" => [ [
+              "product_id" =>  $product_id,
+              "product_name" => $product_name,
+              "product_image_url" => $product_image_url ,
+              "sku" => $sku,
+              "category_id" => "12345",
+              "category_name" => "No Category",
+              "brand_id" => "12345",
+              "brand_name" => $merchant_name,
+              "qty_to_invoice" => $qty_to_invoice,
+              "product_qty_multiplier" => 1,
+              "uom" => "EA",
+              "unit_price" => 200,
+              "unit_cost" => 190,
+              "unit_commission" => 0,
+              "unit_discount" => "0.00",
+              "total_cost" => 190,
+              "total_commission" => 0,
+              "total_gross" => 200,
+              "total_discount" => 0,
+              "total_net" => 200,
+              "total_vatable" => 0,
+              "total_non_vatable" => 0,
+              "total_vat" => $total_vat,
+              "currency" => "PHP",
+             ]],
+             "payments" => [
+                [
+              "payment_type" => "COD",
+              "currency" => "PHP",
+              "amount" => 50,
+              "peso_conversion" => 1,
+             ]],
+             "rewards" => [[
+              "reward_name" => "Pickup Bonus",
+              "currency" => "CLQPT",
+              "amount" => 20,
+              "reward_reference_code" => null,
+              ]],
+             "discounts" => [[
+              "discount_name" => "First Time Promo",
+              "currency" => null,
+              "amount" => null,
+              "discount_reference_code" => "FIRST_TIME",
+             ]],
+        ];
+
+        
+        $response =  Http::post('https://orders-api-dev.iconnect.com.ph/api/v1/orders',$testjson );
+        return $response ;
        
-      ]');
-        return $lazada->execute($request, $this->access_token);
+        // *get order
+        // $carbon = new Carbon();
+        // $dt = Carbon::today()->toDateString();
+        // $lazada = new LazopClient($this->api_url, $this->partner_id, $this->partner_key);
+        // $request = new LazopRequest('/orders/items/get','GET');
+        // $request->addApiParam('order_ids','[ 356769709495301,356757543044743]');
+        // return $lazada->execute($request, $this->access_token);
+
     }
 
 
