@@ -23,6 +23,8 @@ Route::get('/lazada/refreshtoken', [HomeController::class,'lazadasrefreshToken']
 Route::get('/lazada/token', [HomeController::class,'lazadagetToken']);
 Route::get('/lazada/code', [HomeController::class,'lazadaauthorization']);
 Route::get('/lazada/getItems', [HomeController::class,'lazgetorderitems']);
+Route::get('/dataorder', [HomeController::class,'index']);
+
 
 Route::get('/zalora', [HomeController::class,'zaloras']);
 
